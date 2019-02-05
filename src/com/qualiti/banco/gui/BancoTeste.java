@@ -6,7 +6,7 @@ import com.qualiti.banco.modelo.Conta;
 import com.qualiti.banco.modelo.Poupanca;
 import com.qualiti.banco.modelo.TipoConta;
 
-public class Banco_teste {
+public class BancoTeste {
 
 	public static void main(String[] args) {
 		
@@ -15,16 +15,16 @@ public class Banco_teste {
 		c.setSaldo(1290);
 		
 		Poupanca p = new Poupanca();
-		p.setNumero("124");
-		p.setSaldo(8650);
+		p.setNumero("129");
+		p.setSaldo(8000);
 		
 		Fachada fachada = new Fachada();
 		
 		try {
 			fachada.inserirConta(c);
 		} catch (BancoException e) {
+			System.out.println(e.getMessage());
 			
-			e.printStackTrace();
 		}
 		try {
 			fachada.inserirConta(p);
@@ -33,34 +33,39 @@ public class Banco_teste {
 			
 		}
 		
-		
 		Conta retorno;
 		try {
 			retorno = fachada.procurarConta("123");
 			
-			if(retorno != null){
-				System.out.println("Conta encontrada: Sado - "+retorno.getSaldo());
-			}else{
-				System.out.println("Conta não existente!");
+			if(retorno != null) {
+				System.out.println("Conta encontrada: Saldo - "+retorno.getSaldo());
+			}else {
+				System.out.println("Conta nao existe");
 			}
+			
 		} catch (BancoException e) {
 			System.out.println(e.getMessage());
 			
 		}
 		
 		
-		
 		String relatorio = fachada.gerarRelatorioContas();
 		System.out.println(relatorio);
 		
 		double totalSaldos = fachada.recuperarSaldoTotalContas(null);
-		System.out.println("O saldo total é: "+totalSaldos);
+		System.out.println("O saldo total Ã©: "+ totalSaldos);
 		
-		double totalSaldoPoupanca = fachada.recuperarSaldoTotalContas(TipoConta.POUPANCA);
-		System.out.println("O saldo da poupança total é: "+totalSaldoPoupanca);
+		double totalSaldoPoupancas = 
+				fachada.recuperarSaldoTotalContas(TipoConta.POUPANCA);
 		
-		double totalSaldoCorrente = fachada.recuperarSaldoTotalContas(TipoConta.CORRENTE);
-		System.out.println("O saldo da conta corrente total é: "+totalSaldoCorrente);
+		System.out.println("O saldo total Poupancas Ã©: "+ totalSaldoPoupancas);
 		
+		double totalSaldoContasCorrentes = 
+				fachada.recuperarSaldoTotalContas(TipoConta.CORRENTE);
+	
+		System.out.println("O saldo total C/C Ã©: "+ 
+																totalSaldoContasCorrentes);
+
 	}
+
 }

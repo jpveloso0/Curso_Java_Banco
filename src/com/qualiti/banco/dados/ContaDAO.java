@@ -11,5 +11,5 @@ public interface ContaDAO {
 	Conta procurar(String numero);
 	String gerarRelatorioContas();
 	double recuperarSaldoTotalContas(TipoConta tipo);
-	
+
 }

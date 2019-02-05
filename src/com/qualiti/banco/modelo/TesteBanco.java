@@ -1,48 +1,109 @@
 package com.qualiti.banco.modelo;
 
+import javax.swing.plaf.synth.SynthScrollBarUI;
+
+import com.qualiti.banco.excecoes.BancoException;
+
 public class TesteBanco {
 
 	public static void main(String[] args) {
+		//Nunca lançar uma excessão no main
+		Conta c1 = new Conta("1111-2");
+		Cliente cli2 = new Cliente("Ana Maria", "088");
 		
-		Conta con = new Conta();
+		c1.setSaldo(2000);
+		c1.setCliente(cli2);
 		
-		con.setNumero("123456789.00");
-		con.setSaldo(1500.00);
-		con.creditar(1000);
+		System.out.println(c1);
 		
-		Conta con2 = new Conta();
-		con2.setNumero("12345-1");
-		con2.setSaldo(2000);
+		Conta c3 = new Conta("8888-9");
 		
-		con2.debitar(500);
+		if(c1.getNumero().equals(c3.getNumero())) {
+			
+		}
+		if(c1.equals(c3)) {
+			System.out.println("c1 e c3 sao iguais");
+		}else {
+			System.out.println("c1 e c3 sao diferentes");
+		}
 		
-		Cliente c1 = new Cliente();
+		Cliente cli = new Cliente();
 		
-		Cliente c2 = new Cliente("João Pedro","088");
 		
-		System.out.println("Saldo da conta 1: "+con.getSaldo());
-		System.out.println("Saldo da conta 2: "+con2.getSaldo());
 		
-		con.transferir(con2, 500);
-		System.out.println(con2.getSaldo());
+		if(cli.equals(cli2)) {
+			
+		}
 		
-		con2.transferir(con, 2500);
-		System.out.println(con.getSaldo()); 
-		
-		Poupanca poup = new Poupanca();
-		poup.setNumero("12345-5656");
-		poup.setSaldo(2500);
-		
-		poup.creditar(500);
-		poup.debitar(250);
-		poup.renderJuros(0.1); 
+		Poupanca p = new Poupanca();
+		p.setSaldo(1000);
+		p.setNumero("47653-x");
 		
 		ContaBonus cb1 = new ContaBonus();
 		cb1.creditar(1000);
-		cb1.renderBonus();
 		
-		System.out.println("Saldo cb: "+cb1.getSaldo());
-		System.out.println("Bonus cb: "+cb1.getBonus());
+		System.out.println("SALDO CB: "+cb1.getSaldo());
+		System.out.println("BONUS CB: "+cb1.getBonus());
+		
+		p.creditar(500);
+		try {
+			p.debitar(200);
+			System.out.println("Debito realizado com sucesso");
+		} catch (BancoException e) {
+			System.out.println(e.getMessage());
+			
+		}finally {
+			System.out.println("Volte sempre!");
+			
+		}
+		
+		p.renderJuros(0.1);
+		
+		c1.setNumero("1234-x");
+		c1.setSaldo(500);
+		c1.creditar(1000);
+		
+		Conta c2 = new Conta();
+		c2.setNumero("3456-1");
+		c2.setSaldo(2000);
+		
+		try {
+			c2.debitar(500);
+			
+		} catch (BancoException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Saldo C2 = "+c2.getSaldo());
+		
+		System.out.println("Saldo C1 =  "+c1.getSaldo());
+		
+		c1.setSaldo(1000);
+		c2.setSaldo(1000);
+		
+		try {
+			c1.transferir(c2, 500);
+			
+		} catch (BancoException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println("Saldo C2 = "+c2.getSaldo());
+		
+		System.out.println("Saldo C1 =  "+c1.getSaldo());
+		
+		try {
+			c1.transferir(c2, 1000);
+			
+		} catch (BancoException e) {
+			
+			e.printStackTrace();
+		}
+		
+		System.out.println("Saldo C2 = "+c2.getSaldo());
+		
+		System.out.println("Saldo C1 =  "+c1.getSaldo());
 		
 	}
+
 }
