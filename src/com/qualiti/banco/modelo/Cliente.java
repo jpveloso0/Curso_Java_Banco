@@ -40,5 +40,11 @@ public class Cliente extends Pessoa implements Comparable<Cliente> {
 			System.out.println(cli.getNome());
 		}
 	}
+
+	@Override
+	public String getChave() {
+		
+		return getCpf();
+	}
 	
 }
