@@ -34,7 +34,7 @@ public class BancoTelaPrincipal {
 	 */
 	public BancoTelaPrincipal() {
 		initialize();
-	}
+	}					
 
 	/**
 	 * Initialize the contents of the frame.
@@ -60,7 +60,7 @@ public class BancoTelaPrincipal {
 				frame.revalidate();
 				
 			}
-		});
+		});									
 		mnClientes.add(mntmCadastrar);
 		
 		JMenu mnContas = new JMenu("Contas");

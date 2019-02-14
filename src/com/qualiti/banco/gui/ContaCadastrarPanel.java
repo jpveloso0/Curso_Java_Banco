@@ -1,10 +1,23 @@
 package com.qualiti.banco.gui;
 
-import javax.swing.JPanel;
-import javax.swing.JLabel;
-import javax.swing.JTextField;
-import javax.swing.JRadioButton;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+
 import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JRadioButton;
+import javax.swing.JTextField;
+
+import com.qualiti.banco.excecoes.BancoException;
+import com.qualiti.banco.fachada.Fachada;
+import com.qualiti.banco.modelo.Cliente;
+import com.qualiti.banco.modelo.Conta;
+import com.qualiti.banco.modelo.ContaBonus;
+import com.qualiti.banco.modelo.Poupanca;
+import com.qualiti.banco.modelo.TipoConta;
+import javax.swing.ButtonGroup;
 
 public class ContaCadastrarPanel extends JPanel {
 	private JTextField nmeroTxt;
@@ -21,6 +34,7 @@ public class ContaCadastrarPanel extends JPanel {
 	private JRadioButton rdbtnBnus;
 	private JTextField saldoTxt;
 	private JLabel lblSaldo;
+	private final ButtonGroup buttonGroup = new ButtonGroup();
 
 	/**
 	 * Create the panel.
@@ -34,6 +48,7 @@ public class ContaCadastrarPanel extends JPanel {
 		nmeroTxt.setColumns(10);
 		
 		lblCpf = new JLabel("CPF:");
+		lblCpf.setEnabled(false);
 		lblCpf.setBounds(30, 96, 46, 14);
 		add(lblCpf);
 		
@@ -42,51 +57,335 @@ public class ContaCadastrarPanel extends JPanel {
 		add(lblNmero);
 		
 		cpfTxt = new JTextField();
+		cpfTxt.setEnabled(false);
 		cpfTxt.setBounds(97, 93, 124, 20);
 		add(cpfTxt);
 		cpfTxt.setColumns(10);
 		
 		lblTipo = new JLabel("Tipo: ");
+		lblTipo.setEnabled(false);
 		lblTipo.setBounds(30, 155, 46, 14);
 		add(lblTipo);
 		
 		rdbtnCorrente = new JRadioButton("Corrente");
+		buttonGroup.add(rdbtnCorrente);
+		rdbtnCorrente.setEnabled(false);
 		rdbtnCorrente.setSelected(true);
 		rdbtnCorrente.setBounds(59, 195, 109, 23);
 		add(rdbtnCorrente);
 		
 		rdbtnPoupana = new JRadioButton("Poupan\u00E7a");
+		buttonGroup.add(rdbtnPoupana);
+		rdbtnPoupana.setEnabled(false);
 		rdbtnPoupana.setBounds(204, 195, 109, 23);
 		add(rdbtnPoupana);
 		
 		rdbtnBnus = new JRadioButton("B\u00F4nus");
+		buttonGroup.add(rdbtnBnus);
+		rdbtnBnus.setEnabled(false);
 		rdbtnBnus.setBounds(315, 195, 109, 23);
 		add(rdbtnBnus);
 		
 		btnCadastrar = new JButton("Cadastrar");
+		btnCadastrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				String numero = nmeroTxt.getText();
+				String cpf = cpfTxt.getText();
+				String saldoTexto = saldoTxt.getText();
+				
+				TipoConta tipo = null;
+				Conta conta = null;
+				
+				if(rdbtnCorrente.isSelected()){
+					tipo = TipoConta.CORRENTE;
+					conta = new Conta();
+				}
+				
+				if(rdbtnPoupana.isSelected()){
+					tipo = TipoConta.POUPANCA;
+					conta = new Poupanca();
+				}
+				
+				if(rdbtnBnus.isSelected()){
+					tipo = TipoConta.BONUS;
+					conta = new ContaBonus();
+				}
+				
+				try {
+					Cliente cliente = Fachada.getFachada().procurar(cpf);
+					
+					if(cliente != null){
+						
+						conta.setCliente(cliente);
+						conta.setNumero(numero);
+						
+						double saldo = Double.parseDouble(saldoTexto);
+						
+						conta.setSaldo(saldo);
+						conta.setTipo(tipo);
+						
+						Fachada.getFachada().inserirConta(conta);
+						
+						JOptionPane.showMessageDialog(null, "Conta inserida com sucesso", "Cadastrar Conta", 
+								JOptionPane.INFORMATION_MESSAGE);
+						
+						cpfTxt.setText("");
+						nmeroTxt.setText("");
+						rdbtnCorrente.setSelected(true);
+						saldoTxt.setText("");
+						
+						lblCpf.setEnabled(false);
+						lblSaldo.setEnabled(false);
+						lblTipo.setEnabled(false);
+						
+						cpfTxt.setEnabled(false);
+						saldoTxt.setEnabled(false);
+						
+						rdbtnBnus.setEnabled(false);
+						rdbtnCorrente.setEnabled(false);
+						rdbtnPoupana.setEnabled(false);
+						
+						btnAtualizar.setEnabled(false);
+						btnRemover.setEnabled(false);
+						btnCadastrar.setEnabled(false);
+						
+						
+					}else{
+						JOptionPane.showMessageDialog(null, "CPF não cadastrado", "Cadastrar Conta", JOptionPane.ERROR_MESSAGE);
+					}
+					
+				} catch (BancoException e) {	
+					JOptionPane.showMessageDialog(null, e.getMessage(), "Cadastrar Conta", JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+		});
+		btnCadastrar.setEnabled(false);
 		btnCadastrar.setBounds(97, 242, 89, 23);
 		add(btnCadastrar);
 		
 		btnAtualizar = new JButton("Atualizar");
+		btnAtualizar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+
+				String numero = nmeroTxt.getText();
+				String cpf = cpfTxt.getText();
+				String saldoTexto = saldoTxt.getText();
+				
+				TipoConta tipo = null;
+				Conta conta = null;
+				
+				if(rdbtnCorrente.isSelected()){
+					tipo = TipoConta.CORRENTE;
+					conta = new Conta();
+				}
+				
+				if(rdbtnPoupana.isSelected()){
+					tipo = TipoConta.POUPANCA;
+					conta = new Poupanca();
+				}
+				
+				if(rdbtnBnus.isSelected()){
+					tipo = TipoConta.BONUS;
+					conta = new ContaBonus();
+				}
+				
+				try {
+					Cliente cliente = Fachada.getFachada().procurar(cpf);
+					
+					if(cliente != null){
+						
+						conta.setCliente(cliente);
+						conta.setNumero(numero);
+						
+						double saldo = Double.parseDouble(saldoTexto);
+						
+						conta.setSaldo(saldo);
+						conta.setTipo(tipo);
+						
+						Fachada.getFachada().atualizarConta(conta);
+						
+						JOptionPane.showMessageDialog(null, "Conta atualizada com sucesso", "Atualizar Conta", 
+								JOptionPane.INFORMATION_MESSAGE);
+						
+						cpfTxt.setText("");
+						nmeroTxt.setText("");
+						rdbtnCorrente.setSelected(true);
+						saldoTxt.setText("");
+						
+						lblCpf.setEnabled(false);
+						lblSaldo.setEnabled(false);
+						lblTipo.setEnabled(false);
+						
+						cpfTxt.setEnabled(false);
+						saldoTxt.setEnabled(false);
+						
+						rdbtnBnus.setEnabled(false);
+						rdbtnCorrente.setEnabled(false);
+						rdbtnPoupana.setEnabled(false);
+						
+						btnAtualizar.setEnabled(false);
+						btnRemover.setEnabled(false);
+						btnCadastrar.setEnabled(false);
+						
+						
+					}else{
+						JOptionPane.showMessageDialog(null, "CPF não atualizado", "Atualizar Conta", JOptionPane.ERROR_MESSAGE);
+					}
+					
+				} catch (BancoException e) {	
+					JOptionPane.showMessageDialog(null, e.getMessage(), "Atualizar Conta", JOptionPane.ERROR_MESSAGE);
+				}
+				
+				
+			}
+		});
+		btnAtualizar.setEnabled(false);
 		btnAtualizar.setBounds(239, 242, 89, 23);
 		add(btnAtualizar);
 		
 		btnRemover = new JButton("Remover");
+		btnRemover.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				
+				try {
+					Fachada.getFachada().removerConta(nmeroTxt.getText());
+					
+					int escolha = JOptionPane.showConfirmDialog(null, "Deseja realmente remover a conta? ", "Remover Conta", 
+							JOptionPane.YES_NO_OPTION);
+					
+					if(escolha == JOptionPane.YES_OPTION){
+						
+						cpfTxt.setText("");
+						nmeroTxt.setText("");
+						rdbtnCorrente.setSelected(true);
+						saldoTxt.setText("");
+						
+						lblCpf.setEnabled(false);
+						lblSaldo.setEnabled(false);
+						lblTipo.setEnabled(false);
+						
+						cpfTxt.setEnabled(false);
+						saldoTxt.setEnabled(false);
+						
+						rdbtnBnus.setEnabled(false);
+						rdbtnCorrente.setEnabled(false);
+						rdbtnPoupana.setEnabled(false);
+						
+						btnAtualizar.setEnabled(false);
+						btnRemover.setEnabled(false);
+						btnCadastrar.setEnabled(false);
+						
+					}
+					
+				} catch (BancoException e1) {
+					JOptionPane.showMessageDialog(null, e1.getMessage(), "Remover Conta", JOptionPane.ERROR_MESSAGE);
+				}
+				
+			}
+		});
+		btnRemover.setEnabled(false);
 		btnRemover.setBounds(239, 32, 89, 23);
 		add(btnRemover);
 		
 		btnProcurar = new JButton("Procurar");
+		btnProcurar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				
+				String numero = nmeroTxt.getText();
+				
+				try {
+					Conta contaBusca = Fachada.getFachada().procurarConta(numero);
+					
+					if(contaBusca != null){
+						cpfTxt.setText(contaBusca.getCliente().getCpf());
+						
+						String saldoTexto = Double.toString(contaBusca.getSaldo());
+						
+						saldoTxt.setText(saldoTexto);
+						
+						TipoConta tipo = contaBusca.getTipo();
+						
+						if(tipo.equals(TipoConta.CORRENTE)){
+							rdbtnCorrente.setSelected(true);
+						}
+						
+						if(tipo.equals(TipoConta.POUPANCA)){
+							rdbtnPoupana.setSelected(true);
+						}
+						
+						if(tipo.equals(TipoConta.BONUS)){
+							rdbtnBnus.setSelected(true);
+						}
+						
+						lblCpf.setEnabled(true);
+						lblSaldo.setEnabled(true);
+						lblTipo.setEnabled(true);
+						
+						cpfTxt.setEnabled(true);
+						saldoTxt.setEnabled(true);
+						
+						rdbtnBnus.setEnabled(true);
+						rdbtnCorrente.setEnabled(true);
+						rdbtnPoupana.setEnabled(true);
+						
+						btnAtualizar.setEnabled(true);
+						btnRemover.setEnabled(true);
+						btnCadastrar.setEnabled(false);
+						
+						
+					}else{
+						
+						int escolha = JOptionPane.showConfirmDialog(null, "Conta não existe. Deseja cadastrar?", "Cadastrar Conta",
+								JOptionPane.YES_NO_OPTION);
+						
+						if(escolha == JOptionPane.YES_OPTION){
+							
+							lblCpf.setEnabled(true);
+							lblSaldo.setEnabled(true);
+							lblTipo.setEnabled(true);
+							
+							cpfTxt.setEnabled(true);
+							saldoTxt.setEnabled(true);
+							
+							rdbtnBnus.setEnabled(true);
+							rdbtnCorrente.setEnabled(true);
+							rdbtnPoupana.setEnabled(true);
+							
+							btnAtualizar.setEnabled(false);
+							btnRemover.setEnabled(false);
+							btnCadastrar.setEnabled(true);
+							
+						}
+						
+					}
+					
+				} catch (BancoException e) {
+					JOptionPane.showMessageDialog(null, e.getMessage(), "Procurar Conta", JOptionPane.ERROR_MESSAGE);
+					
+				}
+				
+			}
+		});
 		btnProcurar.setBounds(351, 32, 89, 23);
 		add(btnProcurar);
 		
 		lblSaldo = new JLabel("Saldo:");
+		lblSaldo.setEnabled(false);
 		lblSaldo.setBounds(239, 96, 46, 14);
 		add(lblSaldo);
 		
 		saldoTxt = new JTextField();
+		saldoTxt.setEnabled(false);
 		saldoTxt.setBounds(284, 93, 124, 20);
 		add(saldoTxt);
 		saldoTxt.setColumns(10);
 
 	}
+	
+	
+	
+	
 }
